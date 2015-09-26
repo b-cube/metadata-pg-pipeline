@@ -1,10 +1,13 @@
 import sqlalchemy as sqla
 from sqlalchemy.orm import sessionmaker, mapper
-from sqlalchemy import Table, MetaData, Column, String, DateTime, Integer
+from sqlalchemy import Table, MetaData, Column, String, DateTime, Integer, Boolean
 from sqlalchemy.dialects.postgresql import *
+from sqlalchemy.orm import relationship, backref
+# from sqlalchemy.ext.declarative import declarative_base
 
 
-metadata = Metadata()
+metadata = sqla.MetaData()
+# Base = declarative_base()
 
 
 responses_table = Table(
@@ -24,9 +27,19 @@ responses_table = Table(
 )
 
 
-mapper(Response, response_table)
-
-
 class Response(object):
     def __init__(self, sha_id):
         self.source_url_sha = sha_id
+
+validations_table = Table(
+    'validations',
+    metadata,
+    Column('id', Integer, primary_key=True),
+    Column('validated_on', DateTime),
+    Column('errors', ARRAY(String)),
+    Column('valid', Boolean),
+    Column('response_id', Integer)
+)
+
+
+mapper(Response, responses_table)

@@ -1,6 +1,21 @@
 import subprocess
 
 
+def validate_file(xml_file):
+    cmd = 'PParse -v=always -n -s -f {0}'.format(xml_file)
+    s = subprocess.Popen(
+        cmd,
+        shell=True,
+        stdout=subprocess.PIPE,
+        stdin=subprocess.PIPE,
+        stderr=subprocess.PIPE
+    )
+    # we need stderr from pparse/stdinparse to actually catch the errors
+    stdout, stderr = s.communicate()
+    ret = s.wait()
+    return stderr
+
+
 def validate_in_memory(xml):
     cmd = 'StdInParse -v=always -n -s -f'
     s = subprocess.Popen(

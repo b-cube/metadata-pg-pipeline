@@ -27,6 +27,7 @@ class Response(Base):
     host = Column(String)
     headers = Column(ARRAY(String))
     schemas = Column(ARRAY(String))
+    namespaces = Column(ARRAY(String))
 
     validations = relationship('Validation', backref='response')
 

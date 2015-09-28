@@ -17,5 +17,11 @@ class Reader(object):
 
 
 class ResponseReader(Reader):
+    def _build_clauses(self, query):
+        clauses = []
+
+        return clauses
+
     def read(self, query):
-        
+        clauses = self._build_clauses(query)
+        self.session.query(Response).filter(*clauses)

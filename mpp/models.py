@@ -13,10 +13,6 @@ from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 
 
-metadata = MetaData()
-Base = declarative_base()
-
-
 class Response(Base):
     __tablename__ = 'responses'
     id = Column(Integer, primary_key=True)
@@ -42,4 +38,3 @@ class Validation(Base):
     errors = Column(ARRAY(String))
     valid = Column(Boolean)
     response_id = Column(Integer, ForeignKey('responses.id'))
-

@@ -22,8 +22,9 @@ loader = Loader(conf)
 
 # get the set, validate, store outputs
 # but need to paginate because of ram issues
-for i in xrange(0, 27500, 50):
-    for response in reader.read('', limit=50, offset=i):
+for i in xrange(0, 27500, 25):
+    print 'QUERYING {0}:{1}'.format(i, 25)
+    for response in reader.read('', limit=25, offset=i):
         print response.source_url
 
         xml = response.cleaned_content
@@ -31,7 +32,7 @@ for i in xrange(0, 27500, 50):
 
         data = {
             "response_id": response.id,
-            "valid": 'Fatal Error' not in stderr,
+            "valid": 'Error at' not in stderr,
             "validated_on": datetime.now()
         }
         if stderr:

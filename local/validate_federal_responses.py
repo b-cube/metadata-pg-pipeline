@@ -22,6 +22,8 @@ loader = Loader(conf)
 
 # get the set, validate, store outputs
 for response in reader.read(''):
+    print response.source_url
+
     xml = response.cleaned_content
     stderr = validate_in_memory(xml)
 
@@ -34,7 +36,11 @@ for response in reader.read(''):
         data.update({
             "errors": stderr.split('\n\n')
         })
+        print '\t', stderr[:100]
 
-    v = Validation()
-    v.create(data)
-    loader.load(v)
+    try:
+        v = Validation()
+        v.create(data)
+        loader.load(v)
+    except Exception as ex:
+        print ex

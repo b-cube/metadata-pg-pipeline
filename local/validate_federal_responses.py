@@ -29,12 +29,12 @@ for response in reader.read(''):
 
     data = {
         "response_id": response.id,
-        "valid": stderr != '',
+        "valid": 'Fatal Error' not in stderr,
         "validated_on": datetime.now()
     }
     if stderr:
         data.update({
-            "errors": stderr.split('\n\n')
+            "errors": [s.strip() for s in stderr.split('\n\n')]
         })
         print '\t', stderr[:100]
 

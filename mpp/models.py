@@ -28,9 +28,9 @@ class Response(Base):
     inlinks = Column(ARRAY(String))
     outlinks = Column(ARRAY(String))
     host = Column(String)
-    headers = Column(ARRAY(String))
+    headers = Column(JSON)
     schemas = Column(ARRAY(String))
-    namespaces = Column(ARRAY(String))
+    namespaces = Column(JSON)
     format = Column(String(20))
 
     validations = relationship('Validation', backref='response')

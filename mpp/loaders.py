@@ -67,7 +67,7 @@ class Loader(object):
                 fmt = 'unknown'
 
         try:
-            response.namespaces = parser.namespaces.items()
+            response.namespaces = parser.namespaces
         except Exception as ex:
             print 'namespace error', ex
 
@@ -86,7 +86,10 @@ class Loader(object):
         response.host = doc.get('host', '')
         response.inlinks = doc.get('inlinks', [])
         response.outlinks = doc.get('outlinks', [])
-        response.headers = doc.get('response_headers', [])
+        headers = doc.get('response_headers', [])
+        response.headers = dict(
+            (k.strip(), v.strip()) for k, v in (h.split(':', 1) for h in headers)
+        )
 
         try:
             self.session.add(response)

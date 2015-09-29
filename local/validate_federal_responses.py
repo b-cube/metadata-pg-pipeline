@@ -21,7 +21,7 @@ reader = ResponseReader(conf)
 loader = Loader(conf)
 
 # get the set, validate, store outputs
-for response in reader.read():
+for response in reader.read(''):
     xml = response.cleaned_content
     stderr = validate_in_memory(xml)
 

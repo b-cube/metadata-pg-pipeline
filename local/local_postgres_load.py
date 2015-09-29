@@ -15,7 +15,10 @@ loader = Loader(conf)
 with open('responses_with_federal_schemas.txt', 'r') as f:
     responses = [g.strip() for g in f.readlines() if g]
 
-for response in responses[:10]:
+for i, response in enumerate(responses):
+    if i % 5000 == 0:
+        print 'finished: ', i
+
     with open(response, 'r') as f:
         data = json.loads(f.read())
 

@@ -1,6 +1,7 @@
 import sqlalchemy as sqla
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.dialects.postgresql import *
+from sqlalchemy import and_
 from mpp.models import Response
 
 
@@ -18,10 +19,12 @@ class Reader(object):
 
 class ResponseReader(Reader):
     def _build_clauses(self, query):
+        # TODO: care about this
         clauses = []
-
         return clauses
 
     def read(self, query):
-        clauses = self._build_clauses(query)
-        self.session.query(Response).filter(*clauses)
+        # clauses = self._build_clauses(query)
+        # TODO: not hardcode the query, obviously
+        clauses = [Response.format == 'xml']
+        return self.session.query(Response).filter(and_(*clauses)).all()

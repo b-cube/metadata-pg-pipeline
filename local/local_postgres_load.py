@@ -2,6 +2,7 @@
 
 import json
 from mpp.loaders import Loader
+from mpp.models import Response
 import traceback
 
 '''
@@ -22,8 +23,11 @@ for i, response in enumerate(responses):
     with open(response, 'r') as f:
         data = json.loads(f.read())
 
+    r = Response()
+    r.create(data)
+
     try:
-        loader.load(data)
+        loader.load(r)
     except Exception as ex:
         print response
         print '\t', ex

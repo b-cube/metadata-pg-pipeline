@@ -13,7 +13,7 @@ class Reader(object):
         Session.configure(bind=engine)
         self.session = Session()
 
-    def read(self, query):
+    def read(self, query, limit=10, offset=0):
         pass
 
 
@@ -23,8 +23,8 @@ class ResponseReader(Reader):
         clauses = []
         return clauses
 
-    def read(self, query):
+    def read(self, query, limit=10, offset=0):
         # clauses = self._build_clauses(query)
         # TODO: not hardcode the query, obviously
         clauses = [Response.format == 'xml']
-        return self.session.query(Response).filter(and_(*clauses)).all()
+        return self.session.query(Response).filter(and_(*clauses)).limit(limit).offset(offset).all()

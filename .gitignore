@@ -1,2 +1,6 @@
 *.pyc
-local/
+local/*.conf
+
+build/
+dist/
+*.egg-info/

@@ -13,12 +13,15 @@ from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 
 
+Base = declarative_base()
+
+
 class Response(Base):
     __tablename__ = 'responses'
     id = Column(Integer, primary_key=True)
     source_url_sha = Column(String(100))
     source_url = Column(String)
-    xml_content_as_str = Column(TEXT)
+    cleaned_content = Column(TEXT)
     initial_harvest_date = Column(DateTime)
     raw_content = Column(String)
     raw_content_md5 = Column(String)
@@ -28,6 +31,7 @@ class Response(Base):
     headers = Column(ARRAY(String))
     schemas = Column(ARRAY(String))
     namespaces = Column(ARRAY(String))
+    format = Column(String(20))
 
     validations = relationship('Validation', backref='response')
 

@@ -21,26 +21,28 @@ reader = ResponseReader(conf)
 loader = Loader(conf)
 
 # get the set, validate, store outputs
-for response in reader.read(''):
-    print response.source_url
+# but need to paginate because of ram issues
+for i in xrange(0, 27500, 50):
+    for response in reader.read('', limit=50, offset=i):
+        print response.source_url
 
-    xml = response.cleaned_content
-    stderr = validate_in_memory(xml)
+        xml = response.cleaned_content
+        stderr = validate_in_memory(xml)
 
-    data = {
-        "response_id": response.id,
-        "valid": 'Fatal Error' not in stderr,
-        "validated_on": datetime.now()
-    }
-    if stderr:
-        data.update({
-            "errors": [s.strip() for s in stderr.split('\n\n')]
-        })
-        print '\t', stderr[:100]
+        data = {
+            "response_id": response.id,
+            "valid": 'Fatal Error' not in stderr,
+            "validated_on": datetime.now()
+        }
+        if stderr:
+            data.update({
+                "errors": [s.strip() for s in stderr.split('\n\n')]
+            })
+            print '\t{0}'.format(stderr[:100])
 
-    try:
-        v = Validation()
-        v.create(data)
-        loader.load(v)
-    except Exception as ex:
-        print ex
+        try:
+            v = Validation()
+            v.create(data)
+            loader.load(v)
+        except Exception as ex:
+            print ex

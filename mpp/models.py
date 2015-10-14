@@ -39,6 +39,8 @@ class Response(Base):
     format = Column(String(20))
 
     validations = relationship('Validation', backref='response')
+    identities = relationship('Identity', backref='response')
+    bags_of_words = relationship('BagOfWords', backref='response')
 
     def _clean(self, raw_content):
         # intermediate option if not running
@@ -123,3 +125,19 @@ class Validation(Base):
         self.valid = doc.get('valid')
         self.errors = doc.get('errors')
         self.validated_on = doc.get('validated_on')
+
+
+class Identity(Base):
+    __tablename__ = 'identities'
+    id = Column(Integer, primary_key=True)
+    identity = Column(JSON)
+    response_id = Column(Integer, ForeignKey('responses.id'))
+
+
+class BagOfWords(Base):
+    __tablename__ = 'bag_of_words'
+    id = Column(Integer, primary_key=True)
+    generated_on = Column(DateTime)
+    bag_of_words = Column(ARRAY(String))
+    method = Column(String)
+    response_id = Column(Integer, ForeignKey('responses.id'))

@@ -7,7 +7,8 @@ from sqlalchemy.exc import IntegrityError
 
 
 # subdirs_for_rm = ['identified', 'cleaned']
-files = glob.glob('../pipeline_tests/identified/*.json')
+files = glob.glob(
+    '/home/ubuntu/semantics_pipeline/pipeline_tests/identified/*.json')
 
 to_remove = []
 

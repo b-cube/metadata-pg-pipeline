@@ -21,16 +21,17 @@ for i, f in enumerate(files[0:10]):
         data = json.loads(g.read())
 
     fname = f.split('/')[-1].split('_')[0]
-    fmt = data.get('response_format', 'unknown')
+    fmt = data.get('response_datatype', 'unknown')
 
     try:
         r = Response()
         r.create(data)
         r_id = loader.load(r)
-    except IntegrityError:
-        # one of the original set of fgdc recs?
-        pass
+    # except IntegrityError:
+    #     # one of the original set of fgdc recs?
+    #     continue
     except:
+        # we're ignoring that original set of fgdc
         continue
 
     try:

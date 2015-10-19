@@ -22,6 +22,7 @@ for i, f in enumerate(files[0:100]):
 
     fname = f.split('/')[-1].split('_')[0]
     fmt = data.get('response_datatype', 'unknown')
+    identity = data.get('identity', [])
 
     try:
         r = Response()
@@ -30,19 +31,21 @@ for i, f in enumerate(files[0:100]):
     # except IntegrityError:
     #     # one of the original set of fgdc recs?
     #     continue
-    except:
+    except Exception as ex:
         # we're ignoring that original set of fgdc
+        print fname, ex
         continue
 
-    try:
-        d = Identity()
-        data.update({"response_id": r_id})
-        d.create(data)
-        loader.load(d)
-    except:
-        continue
+    if identity and r_id:
+        try:
+            d = Identity()
+            data.update({"response_id": r_id})
+            d.create(data)
+            loader.load(d)
+        except:
+            continue
 
-    if fmt != 'xml':
-        to_remove.append(fname)
-        # for s in subdirs_for_rm:
-        #     os.remove('../pipeline_tests/{0}/{1}_s.json'.format(s, fname))
+    # if fmt != 'xml':
+    #     to_remove.append(fname)
+    #     # for s in subdirs_for_rm:
+    #     #     os.remove('../pipeline_tests/{0}/{1}_s.json'.format(s, fname))

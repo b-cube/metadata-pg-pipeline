@@ -26,3 +26,5 @@ class Loader(object):
         except Exception as ex:
             print ex
             self.session.rollback()
+
+        return obj.id

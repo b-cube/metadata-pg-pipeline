@@ -70,19 +70,23 @@ class Response(Base):
         # the pipeline so that we don't need to keep
         # dealing with really junky strings
         # TODO: switch to pipeline clean content
-        cleaned_content = self._clean(doc.get('raw_content', ''))
 
-        try:
-            parser = Parser(cleaned_content)
-            cleaned_content = etree.tostring(parser.xml, pretty_print=True)
-            fmt = 'xml'
-        except Exception as ex:
-            print 'xml error', ex
-            try:
-                clean_json = json.loads(cleaned_content)
-                fmt = 'json'
-            except:
-                fmt = 'unknown'
+        # cleaned_content = self._clean(doc.get('raw_content', ''))
+
+        # try:
+        #     parser = Parser(cleaned_content)
+        #     cleaned_content = etree.tostring(parser.xml, pretty_print=True)
+        #     fmt = 'xml'
+        # except Exception as ex:
+        #     print 'xml error', ex
+        #     try:
+        #         clean_json = json.loads(cleaned_content)
+        #         fmt = 'json'
+        #     except:
+        #         fmt = 'unknown'
+
+        fmt = doc.get('response_format', 'unknown')
+        cleaned_content = doc.get('content')
 
         try:
             self.namespaces = parser.namespaces
@@ -133,6 +137,10 @@ class Identity(Base):
     identity = Column(JSON)
     response_id = Column(Integer, ForeignKey('responses.id'))
 
+    def create(self, doc):
+        self.response_id = doc.get('response_id')
+        self.identity = doc.get('identity')
+
 
 class BagOfWords(Base):
     __tablename__ = 'bag_of_words'
@@ -141,3 +149,9 @@ class BagOfWords(Base):
     bag_of_words = Column(ARRAY(String))
     method = Column(String)
     response_id = Column(Integer, ForeignKey('responses.id'))
+
+    def create(self, doc):
+        self.response_id = doc.get('response_id')
+        self.bag_of_words = doc.get('bag')
+        self.method = doc.get('method')
+        self.generated_on = doc.get('generated_on')

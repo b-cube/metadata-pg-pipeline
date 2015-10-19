@@ -16,7 +16,7 @@ with open('local_rds.conf', 'r') as f:
     conf = json.loads(f.read())
 loader = Loader(conf)
 
-for i, f in enumerate(files[0:10]):
+for i, f in enumerate(files[0:100]):
     with open(f, 'r') as g:
         data = json.loads(g.read())
 

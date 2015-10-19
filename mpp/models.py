@@ -95,7 +95,7 @@ class Response(Base):
         #     except:
         #         fmt = 'unknown'
 
-        fmt = doc.get('response_format', 'unknown')
+        fmt = doc.get('response_datatype', 'unknown')
         cleaned_content = doc.get('content')
 
         if fmt == 'xml':

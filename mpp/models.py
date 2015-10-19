@@ -56,6 +56,16 @@ class Response(Base):
         schemas = []
         for xp in xpaths:
             schemas += extract_attribs(xml, xp)
+
+        # and, for older fgdc, try to get the dtd
+        try:
+            docinfo = xml.docinfo
+            sys_url = docinfo.system_url
+            if sys_url:
+                schemas.append(sys_url)
+        except:
+            pass
+
         # TODO: this might not split everything successfully
         return [
             a.strip() for s in schemas for a in s.split() if s

@@ -88,16 +88,18 @@ class Response(Base):
         fmt = doc.get('response_format', 'unknown')
         cleaned_content = doc.get('content')
 
-        try:
-            self.namespaces = parser.namespaces
-        except Exception as ex:
-            print 'namespace error', ex
+        if fmt == 'xml':
+            parser = Parser(cleaned_content.encode('utf-8'))
+            try:
+                self.namespaces = parser.namespaces
+            except Exception as ex:
+                print 'namespace error', ex
 
-        try:
-            self.schemas = self._pull_schemas(parser.xml)
-        except Exception as ex:
-            print 'schema error', ex
-            traceback.print_exc()
+            try:
+                self.schemas = self._pull_schemas(parser.xml)
+            except Exception as ex:
+                print 'schema error', ex
+                traceback.print_exc()
 
         self.format = fmt
         self.cleaned_content = cleaned_content

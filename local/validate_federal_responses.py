@@ -22,7 +22,7 @@ loader = Loader(conf)
 
 # get the set, validate, store outputs
 # but need to paginate because of ram issues
-for i in xrange(0, 27500, 25):
+for i in xrange(0, 668110, 25):
     print 'QUERYING {0}:{1}'.format(i, 25)
     for response in reader.read('', limit=25, offset=i):
         print response.source_url

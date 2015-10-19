@@ -59,7 +59,7 @@ class Response(Base):
 
         # and, for older fgdc, try to get the dtd
         try:
-            docinfo = xml.docinfo
+            docinfo = xml.getroottree().docinfo
             sys_url = docinfo.system_url
             if sys_url:
                 schemas.append(sys_url)

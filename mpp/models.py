@@ -37,6 +37,7 @@ class Response(Base):
     schemas = Column(ARRAY(String))
     namespaces = Column(JSON)
     format = Column(String(20))
+    metadata_age = Column(DateTime)
 
     validations = relationship('Validation', backref='response')
     identities = relationship('Identity', backref='response')
@@ -155,7 +156,7 @@ class Identity(Base):
 
 
 class BagOfWords(Base):
-    __tablename__ = 'bag_of_words'
+    __tablename__ = 'bags_of_words'
     id = Column(Integer, primary_key=True)
     generated_on = Column(DateTime)
     bag_of_words = Column(ARRAY(String))

@@ -1,0 +1,75 @@
+#!/anaconda/bin/python
+
+from optparse import OptionParser
+import json as js
+from mpp.loaders import Loader
+from mpp.utils import validate_in_memory
+from mpp.models import Validation, Response
+from datetime import datetime
+import traceback
+import sqlalchemy as sqla
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import and_
+
+
+def main():
+    op = OptionParser()
+    op.add_option('--connection', '-c')
+    op.add_option('--start', '-s')
+    op.add_option('--end', '-e')
+    op.add_option('--interval', '-i')
+    options, arguments = op.parse_args()
+
+    if not options.connection:
+        op.error('No RDS Connection provided')
+
+    try:
+        LIMIT = int(options.interval)
+        s = int(options.start)
+        e = int(options.end)
+    except Exception as ex:
+        op.error('Invalid pagination integer: {0}'.format(ex))
+
+    with open('local_rds.conf', 'r') as f:
+        conf = js.loads(f.read())
+
+    # loader = Loader(conf)
+
+    # our connection
+    engine = sqla.create_engine(conf.get('connection'))
+    Session = sessionmaker()
+    Session.configure(bind=engine)
+    session = Session()
+
+    for OFFSET in xrange(s, e, LIMIT):
+        appends = []
+        for response_id, cleaned_content in session.query(Response.id, Response.cleaned_content).filter(
+                and_(Response.schemas is not None, Response.schemas != '{}')).limit(LIMIT).offset(OFFSET).all():
+
+            stderr = validate_in_memory(cleaned_content)
+
+            validated_data = {
+                "response_id": response_id,
+                "valid": 'Error at' not in stderr,
+                "validated_on": datetime.now().isoformat()
+            }
+            if stderr:
+                validated_data.update({
+                    "errors": [v.strip() for v in stderr.split('\n\n') if v]
+                })
+            appends.append(validated_data)
+
+        try:
+            session.add_all(appends)
+            session.commit()
+        except:
+            print [a['response_id'] for a in appends]
+            session.rollback()
+
+        with open('valiadted/{0}.json'.format('_'.join([a['response_id'] for a in appends])), 'w') as g:
+            g.write(js.dumps(appends, indent=4))
+
+    session.close()
+
+if __name__ == '__main__':
+    main()

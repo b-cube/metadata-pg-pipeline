@@ -145,8 +145,8 @@ class Validation(Base):
 
     def to_json(self):
         data = {}
-        for col in self.__table__.columns.keys():
-            data[col] = getattr(self, col)
+        for col in self.__table__.columns:
+            data[col.name] = getattr(self, col.name)
         return data
 
 
@@ -174,3 +174,10 @@ class BagOfWords(Base):
         self.bag_of_words = doc.get('bag')
         self.method = doc.get('method')
         self.generated_on = doc.get('generated_on')
+
+
+class Metric(Base):
+    __tablename__ = 'metadata_age_metrics'
+    id = Column(Integer, primary_key=True)
+    completeness = Column(JSON)
+    response_id = Column(Integer)

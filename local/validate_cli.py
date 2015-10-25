@@ -69,7 +69,7 @@ def main():
             session.rollback()
             continue
 
-        with open('validated/{0}.json'.format('_'.join([str(a['response_id'] )for a in appends])), 'w') as g:
+        with open('validated/{0}.json'.format('_'.join([str(a.response_id) for a in appends])), 'w') as g:
             g.write(js.dumps([a.to_json() for a in appends], indent=4))
 
     session.close()

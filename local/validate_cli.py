@@ -54,7 +54,10 @@ def main():
                 validated_data.update({
                     "errors": [v.strip() for v in stderr.split('\n\n') if v]
                 })
-            appends.append(validated_data)
+
+            v = Validation()
+            v.create(validated_data)
+            appends.append(v)
 
         try:
             session.add_all(appends)
@@ -67,7 +70,7 @@ def main():
             continue
 
         with open('validated/{0}.json'.format('_'.join([str(a['response_id'] )for a in appends])), 'w') as g:
-            g.write(js.dumps(appends, indent=4))
+            g.write(js.dumps([a.to_json() for a in appends], indent=4))
 
     session.close()
 

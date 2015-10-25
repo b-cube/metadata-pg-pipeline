@@ -143,6 +143,12 @@ class Validation(Base):
         self.errors = doc.get('errors')
         self.validated_on = doc.get('validated_on')
 
+    def to_json(self):
+        data = {}
+        for col in self.__table__.columns.keys():
+            data[col] = getattr(self, col)
+        return data
+
 
 class Identity(Base):
     __tablename__ = 'identities'

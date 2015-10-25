@@ -64,7 +64,7 @@ def main():
             print [a['response_id'] for a in appends]
             session.rollback()
 
-        with open('local/validated/{0}.json'.format('_'.join([a['response_id'] for a in appends])), 'w') as g:
+        with open('validated/{0}.json'.format('_'.join([a['response_id'] for a in appends])), 'w') as g:
             g.write(js.dumps(appends, indent=4))
 
     session.close()

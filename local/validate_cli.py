@@ -30,10 +30,8 @@ def main():
     except Exception as ex:
         op.error('Invalid pagination integer: {0}'.format(ex))
 
-    with open('local_rds.conf', 'r') as f:
+    with open('big_rds.conf', 'r') as f:
         conf = js.loads(f.read())
-
-    # loader = Loader(conf)
 
     # our connection
     engine = sqla.create_engine(conf.get('connection'))
@@ -66,7 +64,7 @@ def main():
             print [a['response_id'] for a in appends]
             session.rollback()
 
-        with open('valiadted/{0}.json'.format('_'.join([a['response_id'] for a in appends])), 'w') as g:
+        with open('local/validated/{0}.json'.format('_'.join([a['response_id'] for a in appends])), 'w') as g:
             g.write(js.dumps(appends, indent=4))
 
     session.close()

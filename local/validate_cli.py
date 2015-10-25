@@ -2,7 +2,6 @@
 
 from optparse import OptionParser
 import json as js
-from mpp.loaders import Loader
 from mpp.utils import validate_in_memory
 from mpp.models import Validation, Response
 from datetime import datetime
@@ -60,11 +59,14 @@ def main():
         try:
             session.add_all(appends)
             session.commit()
-        except:
+        except Exception as ex:
+            print ex
             print [a['response_id'] for a in appends]
+            print
             session.rollback()
+            continue
 
-        with open('validated/{0}.json'.format('_'.join([a['response_id'] for a in appends])), 'w') as g:
+        with open('validated/{0}.json'.format('_'.join([str(a['response_id'] )for a in appends])), 'w') as g:
             g.write(js.dumps(appends, indent=4))
 
     session.close()

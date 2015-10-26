@@ -146,7 +146,8 @@ class Validation(Base):
     def to_json(self):
         data = {}
         for col in self.__table__.columns:
-            data[col.name] = getattr(self, col.name)
+            val = getattr(self, col.name)
+            data[col.name] = val.isoformat() if isinstance(val, datetime) else val
         return data
 
 

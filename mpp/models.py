@@ -15,6 +15,7 @@ from semproc.rawresponse import RawResponse
 from semproc.parser import Parser
 from semproc.xml_utils import extract_attribs
 from lxml import etree
+from datetime import datetime
 import traceback
 
 

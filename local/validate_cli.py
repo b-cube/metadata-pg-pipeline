@@ -40,8 +40,15 @@ def main():
 
     for OFFSET in xrange(s, e, LIMIT):
         appends = []
-        for response_id, cleaned_content in session.query(Response.id, Response.cleaned_content).filter(
-                and_(Response.schemas is not None, Response.schemas != '{}')).limit(LIMIT).offset(OFFSET).all():
+        for response in session.query(Response).filter(
+                and_(Response.schemas is not None, Response.schemas != '{}')
+            ).limit(LIMIT).offset(OFFSET).all():
+
+            response_id = response.id
+            cleaned_content = response.cleaned_content
+
+            if response.validations:
+                continue
 
             stderr = validate_in_memory(cleaned_content)
 

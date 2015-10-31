@@ -2,13 +2,50 @@
 
 from optparse import OptionParser
 import json as js
-from mpp.utils import validate_in_memory
+# from mpp.utils import validate_in_memory
 from mpp.models import Validation, Response
 from datetime import datetime
 import traceback
 import sqlalchemy as sqla
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import and_
+import subprocess
+import threading
+import tempfile
+from os import write, close, unlink
+
+
+class TimedCmd(object):
+    out, err = '', ''
+    status = None
+    process = None
+    command = None
+
+    def __init__(self, cmd):
+        self.command = cmd
+
+    def run(self, timeout=None):
+        def target():
+            self.process = subprocess.Popen(
+                self.command,
+                shell=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
+            )
+            self.out, self.err = self.process.communicate()
+            self.status = self.process.returncode
+
+        thread = threading.Thread(target=target)
+        thread.start()
+        thread.join(timeout)
+        if thread.is_alive():
+            try:
+                self.process.terminate()
+                thread.join()
+            except OSError, e:
+                return -1, '', e
+            raise RuntimeError('Subprocess timed out')
+        return self.status, self.out, self.err
 
 
 def main():
@@ -38,28 +75,42 @@ def main():
     Session.configure(bind=engine)
     session = Session()
 
+    cmd = "StdInParse -v=always -n -s -f < %s"
+
     for OFFSET in xrange(s, e, LIMIT):
         appends = []
         for response in session.query(Response).filter(
                 and_(Response.schemas is not None, Response.schemas != '{}')
             ).limit(LIMIT).offset(OFFSET).all():
 
-            response_id = response.id
-            cleaned_content = response.cleaned_content
-
             if response.validations:
                 continue
 
-            stderr = validate_in_memory(cleaned_content)
+            response_id = response.id
+            cleaned_content = response.cleaned_content
+
+            handle, name = tempfile.mkstemp(suffix='.xml')
+            write(handle, cleaned_content)
+            close(handle)
+
+            # stderr = validate_in_memory(cleaned_content)
+            tc = TimedCmd(cmd % name)
+            try:
+                status, output, error = tc.run(120)
+            except:
+                print 'failed validation: ', response_id
+                continue
+            finally:
+                unlink(name)
 
             validated_data = {
                 "response_id": response_id,
-                "valid": 'Error at' not in stderr,
+                "valid": 'Error at' not in error,
                 "validated_on": datetime.now().isoformat()
             }
-            if stderr:
+            if error:
                 validated_data.update({
-                    "errors": [v.strip() for v in stderr.split('\n\n') if v]
+                    "errors": [v.strip() for v in error.split('\n\n') if v]
                 })
 
             v = Validation()

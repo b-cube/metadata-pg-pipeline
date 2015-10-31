@@ -183,3 +183,14 @@ class Metric(Base):
     id = Column(Integer, primary_key=True)
     completeness = Column(JSON)
     response_id = Column(Integer)
+
+
+class BlendedMetadata(Base):
+    __tablename__ = 'blended_metadatas'
+    id = Column(Integer, primary_key=True)
+    response_id = Column(Integer)
+    tags = Column(String)
+    extracted_info = Column(String)
+    extracted_type = Column(String)
+    source_standard = Column(String)
+    unexpected_standard = Column(String)

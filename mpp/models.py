@@ -169,6 +169,7 @@ class BagOfWords(Base):
     generated_on = Column(DateTime)
     bag_of_words = Column(ARRAY(String))
     method = Column(String)
+    failed = Column(Boolean, default=False)
     response_id = Column(Integer, ForeignKey('responses.id'))
 
     def create(self, doc):

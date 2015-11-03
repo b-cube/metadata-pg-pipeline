@@ -89,10 +89,11 @@ def main():
             # stderr = validate_in_memory(cleaned_content)
             tc = TimedCmd(cmd % name)
             try:
-                status, output, error = tc.run(120)
+                status, output, error = tc.run(60)
             except:
                 print 'failed validation: ', response_id
-                continue
+                error = 'Error at validation CLI: timeout error'
+                # continue
             finally:
                 unlink(name)
 

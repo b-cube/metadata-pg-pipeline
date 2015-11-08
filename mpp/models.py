@@ -43,6 +43,7 @@ class Response(Base):
     validations = relationship('Validation', backref='response')
     identities = relationship('Identity', backref='response')
     bags_of_words = relationship('BagOfWords', backref='response')
+    identifiers = relationship('UniqueIdentifier', backref='response')
 
     def _clean(self, raw_content):
         # intermediate option if not running
@@ -205,4 +206,4 @@ class UniqueIdentifier(Base):
     match_type = Column(String)
     original_text = Column(String)
     potential_identifier = Column(String)
-    response_id = Column(Integer)
+    response_id = Column(Integer, ForeignKey('responses.id'))

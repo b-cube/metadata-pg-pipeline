@@ -195,3 +195,14 @@ class BlendedMetadata(Base):
     extracted_type = Column(String)
     source_standard = Column(String)
     unexpected_standard = Column(String)
+
+
+class UniqueIdentifier(Base):
+    __tablename__ = 'unique_identifiers'
+    id = Column(Integer, primary_key=True)
+    tag = Column(String)
+    extraction_type = Column(String)
+    match_type = Column(String)
+    original_text = Column(String)
+    potential_identifier = Column(String)
+    response_id = Column(Integer)

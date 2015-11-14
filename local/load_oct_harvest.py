@@ -14,7 +14,7 @@ from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 from semproc.rawresponse import RawResponse
 from semproc.parser import Parser
-from semproc.xml_utils import extract_attribs
+from semproc.xml_utils import extract_attribs, extract_item
 from lxml import etree
 from datetime import datetime
 import traceback
@@ -168,6 +168,11 @@ for f in files:
     try:
         session.add(october)
         session.commit()
-    except:
+    except Exception as ex:
         print 'commit fail', f
+        print ex
+        print
+        print
         session.rollback()
+
+session.close()

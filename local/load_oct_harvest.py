@@ -8,6 +8,7 @@ from sqlalchemy import (
     Boolean,
     ForeignKey,
 )
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.dialects.postgresql import *
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base

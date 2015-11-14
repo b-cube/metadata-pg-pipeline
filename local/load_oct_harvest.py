@@ -17,6 +17,8 @@ from semproc.parser import Parser
 from semproc.xml_utils import extract_attribs, extract_item
 from lxml import etree
 from datetime import datetime
+import dateutil.parser as dateparser
+
 import traceback
 import glob
 import json as js
@@ -94,6 +96,13 @@ class Oct(Base):
     def _extract_age(self, protocol, xml):
         if protocol == 'ISO':
             md_dates = extract_item(xml, ['//*', 'dateStamp', 'Date'])
+            try:
+                # this will use the current month, day
+                # if only the year is provided (that isn't
+                # valid iso anyway but i am not fixing it here)
+                md_dates = dateparser.parse(md_dates)
+            except:
+                return None
         elif protocol == 'FGDC':
             md_date = extract_item(xml, ['//*', 'metainfo', 'metd'])
             try:

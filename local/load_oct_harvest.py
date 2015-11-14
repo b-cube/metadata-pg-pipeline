@@ -142,7 +142,7 @@ class Oct(Base):
 
         protocol = self.response_identity.get('protocol', '')
         if protocol in ['ISO', 'FGDC']:
-            age = _extract_age(protocol, parser.xml)
+            age = self._extract_age(protocol, parser.xml)
             if age:
                 self.metadata_age = age
 

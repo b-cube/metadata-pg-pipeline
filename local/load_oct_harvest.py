@@ -19,6 +19,7 @@ from semproc.xml_utils import extract_attribs, extract_item
 from lxml import etree
 from datetime import datetime
 import dateutil.parser as dateparser
+import psycopg2
 
 import traceback
 import glob
@@ -184,6 +185,8 @@ for f in files:
         session.add(october)
         session.commit()
     except IntegrityError:
+        continue
+    except psycopg2.IntegrityError:
         continue
     except Exception as ex:
         print 'commit fail', f

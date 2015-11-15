@@ -12,6 +12,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.dialects.postgresql import *
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.exc import IntegrityError
 from semproc.rawresponse import RawResponse
 from semproc.parser import Parser
 from semproc.xml_utils import extract_attribs, extract_item
@@ -182,6 +183,8 @@ for f in files:
     try:
         session.add(october)
         session.commit()
+    except IntegrityError:
+        continue
     except Exception as ex:
         print 'commit fail', f
         print ex

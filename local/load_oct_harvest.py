@@ -124,9 +124,9 @@ class Oct(Base):
         if fmt == 'xml':
             parser = Parser(cleaned_content.encode('utf-8'))
 
-            if not parser:
+            if parser.xml is None:
                 print self.source_url_sha, self.source_url
-                continue
+                fmt = 'xml;unparsed'
 
         #     try:
         #         self.namespaces = parser.namespaces
@@ -139,20 +139,20 @@ class Oct(Base):
         #         print 'schema error', ex
         #         traceback.print_exc()
 
-        # self.format = fmt
-        # self.cleaned_content = cleaned_content
+        self.format = fmt
+        self.cleaned_content = cleaned_content
 
-        # self.raw_content = doc.get('raw_content', '')
-        # self.raw_content_md5 = doc.get('digest', '')
-        # self.initial_harvest_date = doc.get('tstamp')
-        # self.host = doc.get('host', '')
-        # self.inlinks = doc.get('inlinks', [])
-        # self.outlinks = doc.get('outlinks', [])
-        # headers = doc.get('response_headers', [])
-        # self.headers = dict(
-        #     (k.strip(), v.strip()) for k, v in (h.split(':', 1) for h in headers)
-        # )
-        # self.response_identity = next(iter(doc.get('identity', [])), {})
+        self.raw_content = doc.get('raw_content', '')
+        self.raw_content_md5 = doc.get('digest', '')
+        self.initial_harvest_date = doc.get('tstamp')
+        self.host = doc.get('host', '')
+        self.inlinks = doc.get('inlinks', [])
+        self.outlinks = doc.get('outlinks', [])
+        headers = doc.get('response_headers', [])
+        self.headers = dict(
+            (k.strip(), v.strip()) for k, v in (h.split(':', 1) for h in headers)
+        )
+        self.response_identity = next(iter(doc.get('identity', [])), {})
 
         # protocol = self.response_identity.get('protocol', '')
         # if protocol in ['ISO', 'FGDC']:
@@ -162,14 +162,14 @@ class Oct(Base):
 
 
 # grab the clean text from the rds
-# with open('big_rds.conf', 'r') as f:
-#     conf = js.loads(f.read())
+with open('big_rds.conf', 'r') as f:
+    conf = js.loads(f.read())
 
-# # our connection
-# engine = sqla.create_engine(conf.get('connection'))
-# Session = sessionmaker()
-# Session.configure(bind=engine)
-# session = Session()
+# our connection
+engine = sqla.create_engine(conf.get('connection'))
+Session = sessionmaker()
+Session.configure(bind=engine)
+session = Session()
 
 files = glob.glob('../../semantics_pipeline/pipeline_tests/identified/*.json')
 for f in files:
@@ -179,14 +179,14 @@ for f in files:
     october = Oct()
     october.create(data)
 
-    # try:
-    #     session.add(october)
-    #     session.commit()
-    # except Exception as ex:
-    #     print 'commit fail', f
-    #     print ex
-    #     print
-    #     print
-    #     session.rollback()
+    try:
+        session.add(october)
+        session.commit()
+    except Exception as ex:
+        print 'commit fail', f
+        print ex
+        print
+        print
+        session.rollback()
 
-# session.close()
+session.close()

@@ -184,10 +184,8 @@ for f in files:
     try:
         session.add(october)
         session.commit()
-    except IntegrityError:
-        continue
-    except psycopg2.IntegrityError:
-        continue
+    except (IntegrityError, psycopg2.IntegrityError):
+        print ''
     except Exception as ex:
         print 'commit fail', f
         print ex

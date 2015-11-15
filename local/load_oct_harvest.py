@@ -185,7 +185,7 @@ for f in files:
         session.add(october)
         session.commit()
         session.flush()
-    except exc.IntegrityError:
+    except IntegrityError:
         print ''
         session.rollback()
     except Exception as ex:

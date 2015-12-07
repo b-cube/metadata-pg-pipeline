@@ -1,9 +1,7 @@
 import json as js
-import glob
 import os
-from mpp.loaders import Loader
-from mpp.models import Response, Identity
-from sqlalchemy.exc import IntegrityError
+from mpp.models import Identity
+# from sqlalchemy.exc import IntegrityError
 import sqlalchemy as sqla
 from sqlalchemy.orm import sessionmaker
 
@@ -36,11 +34,11 @@ Session.configure(bind=engine)
 session = Session()
 
 start = 0
-end = 5
-limit = 5
+end = 556900
+limit = 1000
 for i in xrange(start, end, limit):
     for response_id, response_sha in session.execute(sql % (limit, i)):
-        fname = 'home/ubuntu/semantics_pipeline/pipeline_tests/identified/%s_identified.json' % response_sha
+        fname = '/home/ubuntu/semantics_pipeline/pipeline_tests/identified/%s_identified.json' % response_sha
         if not os.path.exists(fname):
             continue
 
